@@ -75,5 +75,17 @@ export { ClaudeCodePreset, createClaudeCodePreset } from './presets/claude-code.
 export { DockerPreset, createDockerComposePreset } from './presets/docker.js';
 export { ShellPreset, createShellPreset, createCommandPreset } from './presets/shell.js';
 
+// Claude Code parsers (commonly used)
+export {
+  ClaudeCodeStateParser,
+  claudeCodeStateParser,
+  createClaudeCodeStateParser,
+} from './parsers/state/claude-code.js';
+export {
+  ClaudeCodeConfirmParser,
+  claudeCodeConfirmParser,
+  createClaudeCodeConfirmParser,
+} from './parsers/confirm/claude-code.js';
+
 // Severity utilities
 export { determineSeverity, createEnhancedOutput } from './core/severity.js';

@@ -278,6 +278,12 @@ Built with:
 - [xterm-headless](https://github.com/xtermjs/xterm.js) - Terminal emulation
 - [MCP SDK](https://github.com/modelcontextprotocol/sdk) - Protocol implementation
 
+## Author
+
+**Ricky Jin** - Building AI infrastructure for developers.
+
+[![X](https://img.shields.io/badge/@vivienjim12830-000000?style=flat&logo=x&logoColor=white)](https://x.com/vivienjim12830) [![Email](https://img.shields.io/badge/Email-jjrrqqq@gmail.com-blue?style=flat&logo=gmail&logoColor=white)](mailto:jjrrqqq@gmail.com)
+
 ---
 
 <p align="center">

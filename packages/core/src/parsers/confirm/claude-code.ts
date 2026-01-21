@@ -74,10 +74,13 @@ export class ClaudeCodeConfirmParser extends BaseConfirmParser implements Confir
 
   /**
    * Parse tool info from confirmation text
-   * Format: server - tool_name(params) (MCP)
+   * Format: server - tool_name(params) or server - tool_name(params) (MCP)
    */
   private parseToolInfo(text: string): ToolInfo | null {
-    const toolMatch = text.match(/(\S+)\s*-\s*(\w+)\s*\(([^)]*)\)\s*\(MCP\)/);
+    // Support both formats:
+    // 1. xjp-mcp - xjp_secret_get(key: "value")
+    // 2. xjp-mcp - xjp_secret_get(key: "value") (MCP)
+    const toolMatch = text.match(/(\S+)\s*-\s*(\w+)\s*\(([^)]*)\)(?:\s*\(MCP\))?/);
     if (!toolMatch) {
       return null;
     }
