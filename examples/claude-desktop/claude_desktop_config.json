@@ -2,8 +2,7 @@
   "mcpServers": {
     "semantic-terminal": {
       "command": "npx",
-      "args": ["@semantic-terminal/mcp"],
-      "env": {}
+      "args": ["@semantic-terminal/mcp"]
     }
   }
 }
