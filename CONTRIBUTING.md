@@ -6,7 +6,7 @@ Thank you for your interest in contributing to Semantic Terminal!
 
 ```bash
 # Clone the repository
-git clone https://github.com/semantic-terminal/semantic-terminal.git
+git clone https://github.com/rickyjim626/semantic-terminal.git
 cd semantic-terminal
 
 # Install dependencies

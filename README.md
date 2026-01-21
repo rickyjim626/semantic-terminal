@@ -243,7 +243,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Clone the repository
-git clone https://github.com/semantic-terminal/semantic-terminal.git
+git clone https://github.com/rickyjim626/semantic-terminal.git
 cd semantic-terminal
 
 # Install dependencies
@@ -282,7 +282,7 @@ Built with:
 
 <p align="center">
   <b>Make your AI agents understand terminals.</b><br>
-  <a href="https://github.com/semantic-terminal/semantic-terminal">GitHub</a> •
+  <a href="https://github.com/rickyjim626/semantic-terminal">GitHub</a> •
   <a href="https://www.npmjs.com/package/@semantic-terminal/mcp">npm</a> •
-  <a href="https://github.com/semantic-terminal/semantic-terminal/issues">Issues</a>
+  <a href="https://github.com/rickyjim626/semantic-terminal/issues">Issues</a>
 </p>
