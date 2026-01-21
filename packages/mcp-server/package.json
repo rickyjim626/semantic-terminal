@@ -1,0 +1,65 @@
+{
+  "name": "@semantic-terminal/mcp",
+  "version": "0.1.0",
+  "description": "MCP Server for Semantic Terminal - Transform any CLI into a semantic API for AI agents",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "semantic-terminal": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/cli.js",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "terminal",
+    "mcp",
+    "semantic",
+    "ai",
+    "claude",
+    "langchain",
+    "automation",
+    "model-context-protocol"
+  ],
+  "author": "Semantic Terminal",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/semantic-terminal/semantic-terminal.git",
+    "directory": "packages/mcp-server"
+  },
+  "homepage": "https://github.com/semantic-terminal/semantic-terminal#readme",
+  "bugs": {
+    "url": "https://github.com/semantic-terminal/semantic-terminal/issues"
+  },
+  "dependencies": {
+    "@semantic-terminal/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.25.3",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
