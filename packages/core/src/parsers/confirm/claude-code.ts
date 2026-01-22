@@ -24,7 +24,8 @@ export class ClaudeCodeConfirmParser extends BaseConfirmParser implements Confir
     const text = context.lastLines.join('\n');
 
     // Check for options-style confirm (Claude Code tool usage)
-    const isOptionConfirm = /^\s*1\.\s*(Yes|Allow)/mi.test(text) && text.includes('Esc to cancel');
+    // Format: "❯ 1. Yes" or "  1. Yes" (with optional leading arrow/spaces)
+    const isOptionConfirm = /^[\s❯>]*1\.\s*(Yes|Allow)/mi.test(text) && text.includes('Esc to cancel');
 
     if (isOptionConfirm) {
       const tool = this.parseToolInfo(text);
@@ -58,13 +59,22 @@ export class ClaudeCodeConfirmParser extends BaseConfirmParser implements Confir
   }
 
   formatResponse(info: ConfirmInfo, response: ConfirmResponse): string {
+    // Claude Code 确认对话框用 ❯ 标记当前选中项，用上下键移动，回车确认
+    // 不能直接输入数字，因为可能被其他对话框（如反馈对话框）截获
     switch (response.action) {
       case 'confirm':
-        return info.type === 'options' ? '1\r' : 'y\r';
+        // 第一项已选中，直接回车
+        return '\r';
       case 'deny':
-        return info.type === 'options' ? '3\r' : 'n\r';
+        // 移动到第三项（No）再回车：下键两次 + 回车
+        return info.type === 'options' ? '\x1b[B\x1b[B\r' : 'n\r';
       case 'select':
-        return `${response.option}\r`;
+        // 移动到指定选项再回车
+        if (typeof response.option === 'number' && response.option > 1) {
+          const downKeys = '\x1b[B'.repeat(response.option - 1);
+          return downKeys + '\r';
+        }
+        return '\r';
       case 'input':
         return `${response.value}\r`;
       default:

@@ -33,7 +33,8 @@ export class ClaudeCodeStateParser extends BaseStateParser implements StateParse
     const isRunning = text.includes('esc to interrupt');
 
     // Check for confirmation dialog
-    const isOptionConfirm = /^\s*1\.\s*(Yes|Allow)/mi.test(text) && text.includes('Esc to cancel');
+    // Note: ❯ and > are prompt indicators, need to match them before option number
+    const isOptionConfirm = /^[\s❯>]*1\.\s*(Yes|Allow)/mi.test(text) && text.includes('Esc to cancel');
     const isYesNoConfirm = /\[Y\/n\]|\(yes\/no\)|Allow\?|Do you want to proceed/i.test(text);
 
     if (isOptionConfirm || isYesNoConfirm) {

@@ -3,8 +3,12 @@
  * Handles ANSI parsing and maintains virtual screen
  */
 
-import { Terminal } from '@xterm/headless';
-import { SerializeAddon } from '@xterm/addon-serialize';
+// @xterm packages are CommonJS, use default import
+import xterm from '@xterm/headless';
+import xtermSerialize from '@xterm/addon-serialize';
+
+const { Terminal } = xterm;
+const { SerializeAddon } = xtermSerialize;
 
 export interface BufferOptions {
   cols?: number;
@@ -12,8 +16,8 @@ export interface BufferOptions {
 }
 
 export class TerminalBuffer {
-  private terminal: Terminal;
-  private serializeAddon: SerializeAddon;
+  private terminal: InstanceType<typeof Terminal>;
+  private serializeAddon: InstanceType<typeof SerializeAddon>;
   readonly cols: number;
   readonly rows: number;
 
