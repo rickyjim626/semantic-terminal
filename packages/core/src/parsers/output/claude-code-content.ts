@@ -38,9 +38,9 @@ export class ClaudeCodeContentParser extends BaseOutputParser<ClaudeCodeContent>
     for (let i = lines.length - 1; i >= 0; i--) {
       const trimmed = lines[i].trim();
       if (trimmed.startsWith(RESPONSE_MARKER)) {
-        // Skip tool output markers (⏺ followed by known tool name)
+        // Skip tool output markers (⏺ followed by tool header pattern)
         const afterMarker = trimmed.slice(RESPONSE_MARKER.length).trim();
-        if (this.isToolName(afterMarker.split(/\s/)[0])) {
+        if (this.isToolHeader(afterMarker)) {
           continue;
         }
         lastMarkerIndex = i;
@@ -114,13 +114,18 @@ export class ClaudeCodeContentParser extends BaseOutputParser<ClaudeCodeContent>
     return this.createOutput('claude-content', content, data, 0.9);
   }
 
-  private isToolName(name: string): boolean {
-    const toolNames = [
-      'Bash', 'Read', 'Edit', 'Write', 'Glob', 'Grep',
-      'WebFetch', 'WebSearch', 'Task', 'LSP', 'NotebookEdit',
-      'TodoRead', 'TodoWrite', 'AskUserQuestion', 'Skill',
-    ];
-    return toolNames.includes(name);
+  /**
+   * Check if a line is a tool header (not regular content)
+   * Tool headers have format: "ToolName" or "ToolName (completed in Xs)"
+   * Must be exact tool name, not just starting with tool name
+   */
+  private isToolHeader(afterMarker: string): boolean {
+    // Tool header patterns:
+    // "Bash" (just tool name)
+    // "Bash (completed in 0.5s)" (with completion time)
+    // Must be exact match, not "Bash is a shell" (which is content)
+    const toolHeaderPattern = /^(Bash|Read|Edit|Write|Glob|Grep|WebFetch|WebSearch|Task|LSP|NotebookEdit|TodoRead|TodoWrite|AskUserQuestion|Skill|TaskCreate|TaskUpdate|TaskList|TaskGet|EnterPlanMode|ExitPlanMode|KillShell|TaskOutput)(?:\s+\(completed\s+in\s+[\d.]+s?\))?$/i;
+    return toolHeaderPattern.test(afterMarker.trim());
   }
 }
 
