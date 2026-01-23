@@ -44,6 +44,12 @@ export type {
   DiffLine,
   ToolInfo,
 
+  // Claude Code output types
+  ClaudeCodeStatus,
+  ClaudeCodeContent,
+  ClaudeCodeTitle,
+  ClaudeCodeToolOutput,
+
   // Preset types
   PresetConfig,
 
@@ -54,6 +60,10 @@ export type {
   // Event types
   SessionEvents,
   TerminalEvents,
+
+  // Enhanced context types
+  FrameDelta,
+  EnhancedParserContext,
 } from './core/types.js';
 
 // Parser exports
@@ -87,5 +97,41 @@ export {
   createClaudeCodeConfirmParser,
 } from './parsers/confirm/claude-code.js';
 
+// Claude Code output parsers
+export {
+  ClaudeCodeStatusParser,
+  claudeCodeStatusParser,
+  createClaudeCodeStatusParser,
+} from './parsers/output/claude-code-status.js';
+export {
+  ClaudeCodeContentParser,
+  claudeCodeContentParser,
+  createClaudeCodeContentParser,
+} from './parsers/output/claude-code-content.js';
+export {
+  ClaudeCodeTitleParser,
+  claudeCodeTitleParser,
+  createClaudeCodeTitleParser,
+} from './parsers/output/claude-code-title.js';
+export {
+  ClaudeCodeToolOutputParser,
+  claudeCodeToolOutputParser,
+  createClaudeCodeToolOutputParser,
+} from './parsers/output/claude-code-tool.js';
+
 // Severity utilities
 export { determineSeverity, createEnhancedOutput } from './core/severity.js';
+
+// Fingerprint exports
+export {
+  FingerprintRegistry,
+  defaultFingerprintRegistry,
+  type Fingerprint,
+  type FingerprintType,
+  type FingerprintCategory,
+  type FingerprintMatch,
+  type FingerprintResult,
+} from './core/fingerprint.js';
+
+// Fingerprint definitions
+export { claudeCodeFingerprints } from './fingerprints/index.js';

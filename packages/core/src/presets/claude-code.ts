@@ -9,6 +9,10 @@ import { shellStateParser } from '../parsers/state/shell.js';
 import { tableOutputParser } from '../parsers/output/table.js';
 import { jsonOutputParser } from '../parsers/output/json.js';
 import { diffOutputParser } from '../parsers/output/diff.js';
+import { claudeCodeStatusParser } from '../parsers/output/claude-code-status.js';
+import { claudeCodeContentParser } from '../parsers/output/claude-code-content.js';
+import { claudeCodeTitleParser } from '../parsers/output/claude-code-title.js';
+import { claudeCodeToolOutputParser } from '../parsers/output/claude-code-tool.js';
 import { claudeCodeConfirmParser } from '../parsers/confirm/claude-code.js';
 import { yesNoConfirmParser } from '../parsers/confirm/yesno.js';
 
@@ -19,6 +23,12 @@ export const ClaudeCodePreset: PresetConfig = {
     shellStateParser,
   ],
   outputParsers: [
+    // Claude Code specific parsers (higher priority)
+    claudeCodeStatusParser,
+    claudeCodeToolOutputParser,
+    claudeCodeContentParser,
+    claudeCodeTitleParser,
+    // Generic parsers
     jsonOutputParser,
     tableOutputParser,
     diffOutputParser,

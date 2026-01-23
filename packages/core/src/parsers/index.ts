@@ -25,6 +25,12 @@ export { TableOutputParser, tableOutputParser, createTableOutputParser } from '.
 export { JsonOutputParser, jsonOutputParser, createJsonOutputParser } from './output/json.js';
 export { DiffOutputParser, diffOutputParser, createDiffOutputParser } from './output/diff.js';
 
+// Claude Code output parsers
+export { ClaudeCodeStatusParser, claudeCodeStatusParser, createClaudeCodeStatusParser } from './output/claude-code-status.js';
+export { ClaudeCodeContentParser, claudeCodeContentParser, createClaudeCodeContentParser } from './output/claude-code-content.js';
+export { ClaudeCodeTitleParser, claudeCodeTitleParser, createClaudeCodeTitleParser } from './output/claude-code-title.js';
+export { ClaudeCodeToolOutputParser, claudeCodeToolOutputParser, createClaudeCodeToolOutputParser } from './output/claude-code-tool.js';
+
 // Confirm parsers
 export { ClaudeCodeConfirmParser, claudeCodeConfirmParser, createClaudeCodeConfirmParser } from './confirm/claude-code.js';
 export { YesNoConfirmParser, yesNoConfirmParser, createYesNoConfirmParser } from './confirm/yesno.js';

@@ -70,6 +70,8 @@ export interface ParserContext {
   previousState?: SessionState;
   /** Raw screen with ANSI codes */
   rawScreen?: string;
+  /** Terminal title (from OSC sequence) */
+  terminalTitle?: string;
 }
 
 // ============ State Parser Types ============
@@ -89,7 +91,19 @@ export interface StateParser {
 
 // ============ Output Parser Types ============
 
-export type SemanticOutputType = 'text' | 'table' | 'json' | 'tree' | 'diff' | 'list' | 'error';
+export type SemanticOutputType =
+  | 'text'
+  | 'table'
+  | 'json'
+  | 'tree'
+  | 'diff'
+  | 'list'
+  | 'error'
+  // Claude Code specific types
+  | 'claude-status'
+  | 'claude-content'
+  | 'claude-title'
+  | 'claude-tool';
 
 export interface TableData {
   headers: string[];
@@ -284,4 +298,70 @@ export interface SessionEvents {
 
 export interface TerminalEvents extends SessionEvents {
   ready: () => void;
+}
+
+// ============ Claude Code Output Types ============
+
+/** Claude Code status bar information */
+export interface ClaudeCodeStatus {
+  /** Spinner character: '·', '✻', '✽', '✶', '✳', '✢' */
+  spinner: string;
+  /** Status text: 'Precipitating…', 'Schlepping…', etc. */
+  statusText: string;
+  /** Current phase */
+  phase: 'thinking' | 'tool_running' | 'unknown';
+  /** Whether operation can be interrupted */
+  interruptible: boolean;
+}
+
+/** Claude Code text content */
+export interface ClaudeCodeContent {
+  /** Always 'assistant' for Claude responses */
+  role: 'assistant';
+  /** The actual text content */
+  content: string;
+  /** Whether the response is complete (has ending separator) */
+  isComplete: boolean;
+}
+
+/** Claude Code terminal title information */
+export interface ClaudeCodeTitle {
+  /** Task name extracted from title, e.g., 'Initial Greeting' */
+  taskName: string | null;
+  /** Spinner state in title: '⠐', '⠂', '✳', etc. */
+  spinnerState: string;
+  /** Whether Claude is actively processing */
+  isProcessing: boolean;
+}
+
+/** Claude Code tool output */
+export interface ClaudeCodeToolOutput {
+  /** Tool name: 'Bash', 'Read', 'Edit', 'Write', etc. */
+  toolName: string;
+  /** Tool parameters */
+  params: Record<string, unknown>;
+  /** Tool output content (if available) */
+  output?: string;
+  /** Execution duration in ms (when completed) */
+  duration?: number;
+  /** Current status */
+  status: 'running' | 'completed' | 'failed';
+}
+
+// ========== Enhanced Context Types ==========
+
+export interface FrameDelta {
+  timestamp: number;
+  addedLines: { y: number; text: string; isWrapped: boolean }[];
+  modifiedLines: { y: number; oldText: string; newText: string }[];
+  scrolledLines: number;
+  stableText: string;
+  cursorPosition: { x: number; y: number };
+  terminalTitle?: string;
+}
+
+export interface EnhancedParserContext extends ParserContext {
+  delta?: FrameDelta;
+  fingerprints?: import('./fingerprint.js').FingerprintResult;
+  scrollback?: string[];
 }
