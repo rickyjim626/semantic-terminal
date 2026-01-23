@@ -350,6 +350,31 @@ export interface ClaudeCodeToolOutput {
 
 // ========== Enhanced Context Types ==========
 
+/**
+ * Stable text operations extracted from terminal frames.
+ *
+ * These ops are designed to support append-only streaming reconstruction while
+ * still preserving wrapping/newline semantics.
+ */
+export type StableTextOp =
+  | { kind: 'line'; y: number; text: string; isWrapped: boolean }
+  | { kind: 'append'; y: number; text: string }
+  | { kind: 'replace'; y: number; text: string; isWrapped: boolean };
+
+/**
+ * Frame delta format for incremental extraction pipelines that emit StableTextOp.
+ */
+export interface FrameDeltaOps {
+  timestamp: number;
+  addedLines: { y: number; text: string; isWrapped: boolean }[];
+  modifiedLines: { y: number; oldText: string; newText: string; isWrapped: boolean }[];
+  scrolledLines: number;
+  stableOps: StableTextOp[];
+  cursorPosition: { x: number; y: number };
+  window?: { startY: number; endY: number };
+  terminalTitle?: string;
+}
+
 export interface FrameDelta {
   timestamp: number;
   addedLines: { y: number; text: string; isWrapped: boolean }[];

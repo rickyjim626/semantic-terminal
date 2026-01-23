@@ -63,6 +63,8 @@ export type {
 
   // Enhanced context types
   FrameDelta,
+  FrameDeltaOps,
+  StableTextOp,
   EnhancedParserContext,
 } from './core/types.js';
 
