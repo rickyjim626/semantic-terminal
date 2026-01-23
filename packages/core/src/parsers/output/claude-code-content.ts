@@ -16,6 +16,8 @@ const RESPONSE_MARKER = '⏺';
 
 // Separator line pattern (used to detect response boundaries)
 const SEPARATOR_PATTERN = /^[─━═]+$/;
+const STATUSBAR_PATTERN = /esc to interrupt/i;
+const SPINNER_ONLY_PATTERN = /^[·✻✽✶✳✢⠐⠂⠈⠁⠉⠃⠋⠓⠒⠖⠦⠤]+$/;
 
 export class ClaudeCodeContentParser extends BaseOutputParser<ClaudeCodeContent> implements OutputParser<ClaudeCodeContent> {
   meta = {
@@ -38,9 +40,8 @@ export class ClaudeCodeContentParser extends BaseOutputParser<ClaudeCodeContent>
     for (let i = lines.length - 1; i >= 0; i--) {
       const trimmed = lines[i].trim();
       if (trimmed.startsWith(RESPONSE_MARKER)) {
-        // Skip tool output markers (⏺ followed by tool header pattern)
-        const afterMarker = trimmed.slice(RESPONSE_MARKER.length).trim();
-        if (this.isToolHeader(afterMarker)) {
+        // Skip tool output markers (⏺ followed by a tool header)
+        if (this.isToolHeader(lines, i)) {
           continue;
         }
         lastMarkerIndex = i;
@@ -88,9 +89,12 @@ export class ClaudeCodeContentParser extends BaseOutputParser<ClaudeCodeContent>
       if (trimmed.startsWith('│')) {
         continue;
       }
+      if (trimmed.startsWith('⎿')) {
+        continue;
+      }
 
-      // Skip spinner/status lines
-      if (/^[·✻✽✶✳✢⠐⠂⠈⠁⠉⠃⠋⠓⠒⠖⠦⠤]/.test(trimmed)) {
+      // Skip status bar and spinner-only lines (but keep legitimate content like "· bullet")
+      if (STATUSBAR_PATTERN.test(trimmed) || SPINNER_ONLY_PATTERN.test(trimmed)) {
         continue;
       }
 
@@ -119,13 +123,56 @@ export class ClaudeCodeContentParser extends BaseOutputParser<ClaudeCodeContent>
    * Tool headers have format: "ToolName" or "ToolName (completed in Xs)"
    * Must be exact tool name, not just starting with tool name
    */
-  private isToolHeader(afterMarker: string): boolean {
+  private isToolHeader(lines: string[], markerIndex: number): boolean {
+    const markerLine = lines[markerIndex]?.trim() ?? '';
+    const afterMarker = markerLine.slice(RESPONSE_MARKER.length).trim();
+    if (!afterMarker) return false;
+
+    // Inline tool headers look like: "ToolName(args...)" (no space before '(')
+    const inlineHeaderMatch = afterMarker.match(/^(\w+)\(.+\)$/);
+    if (inlineHeaderMatch) {
+      const toolName = inlineHeaderMatch[1] ?? '';
+      const knownTools = [
+        'Bash', 'Read', 'Edit', 'Write', 'Glob', 'Grep',
+        'WebFetch', 'WebSearch', 'Task', 'LSP', 'NotebookEdit',
+        'TodoRead', 'TodoWrite', 'AskUserQuestion', 'Skill', 'Search',
+      ];
+      if (knownTools.includes(toolName)) {
+        return true;
+      }
+    }
+
     // Tool header patterns:
     // "Bash" (just tool name)
     // "Bash (completed in 0.5s)" (with completion time)
-    // Must be exact match, not "Bash is a shell" (which is content)
-    const toolHeaderPattern = /^(Bash|Read|Edit|Write|Glob|Grep|WebFetch|WebSearch|Task|LSP|NotebookEdit|TodoRead|TodoWrite|AskUserQuestion|Skill|TaskCreate|TaskUpdate|TaskList|TaskGet|EnterPlanMode|ExitPlanMode|KillShell|TaskOutput)(?:\s+\(completed\s+in\s+[\d.]+s?\))?$/i;
-    return toolHeaderPattern.test(afterMarker.trim());
+    // Must be exact header shape, not "Bash is a shell" (which is content)
+    const headerLike = /^(\w+)(?:\s+\(completed\s+in\s+[\d.]+s?\))?$/i.test(afterMarker);
+    if (!headerLike) return false;
+
+    const firstToken = afterMarker.split(/\s+/)[0] ?? '';
+    const knownTools = [
+      'Bash', 'Read', 'Edit', 'Write', 'Glob', 'Grep',
+      'WebFetch', 'WebSearch', 'Task', 'LSP', 'NotebookEdit',
+      'TodoRead', 'TodoWrite', 'AskUserQuestion', 'Skill',
+    ];
+    if (knownTools.includes(firstToken)) {
+      return true;
+    }
+
+    // Structural detection: tool headers are immediately followed by │ lines
+    for (let j = markerIndex + 1; j < Math.min(lines.length, markerIndex + 6); j++) {
+      const t = lines[j]?.trim() ?? '';
+      if (!t) continue;
+      if (t.startsWith('│')) return true;
+      if (t.startsWith('⎿')) return true;
+
+      // If we hit another boundary before seeing tool content, treat as normal content
+      if (SEPARATOR_PATTERN.test(t) || t.startsWith('❯') || t.startsWith('>') || t.startsWith(RESPONSE_MARKER)) {
+        break;
+      }
+    }
+
+    return false;
   }
 }
 

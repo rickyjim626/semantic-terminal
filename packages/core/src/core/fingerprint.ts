@@ -48,12 +48,26 @@ export class FingerprintRegistry {
   private byCategory: Map<FingerprintCategory, Fingerprint[]> = new Map();
 
   register(fp: Fingerprint): void {
+    const existing = this.fingerprints.get(fp.id);
+    if (existing) {
+      const existingCategory = existing.category;
+      const existingList = this.byCategory.get(existingCategory);
+      if (existingList) {
+        const nextExistingList = existingList.filter(item => item.id !== fp.id);
+        if (nextExistingList.length === 0) {
+          this.byCategory.delete(existingCategory);
+        } else {
+          this.byCategory.set(existingCategory, nextExistingList);
+        }
+      }
+    }
+
     this.fingerprints.set(fp.id, fp);
 
     const catList = this.byCategory.get(fp.category) ?? [];
-    catList.push(fp);
-    catList.sort((a, b) => b.priority - a.priority);
-    this.byCategory.set(fp.category, catList);
+    const nextCatList = [...catList.filter(item => item.id !== fp.id), fp];
+    nextCatList.sort((a, b) => b.priority - a.priority);
+    this.byCategory.set(fp.category, nextCatList);
   }
 
   registerAll(fps: Fingerprint[]): void {
