@@ -1,0 +1,27 @@
+[package]
+name = "semantic-terminal-napi"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Node.js bindings for semantic-terminal - Claude Code terminal output parser"
+keywords = ["napi", "claude", "terminal", "parser", "semantic"]
+categories = ["development-tools", "parsing"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# NAPI-RS
+napi = { version = "2", default-features = false, features = ["napi4", "serde-json"] }
+napi-derive = "2"
+
+# Core library
+semantic-terminal = { workspace = true }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[build-dependencies]
+napi-build = "2"

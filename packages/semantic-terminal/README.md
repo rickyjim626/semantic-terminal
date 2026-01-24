@@ -1,27 +1,10 @@
-# semantic-terminal
+# @anthropic/semantic-terminal
 
 Claude Code terminal output parser - detect states, parse confirmations, extract tool outputs.
 
-**Rust-powered performance with Node.js bindings via napi-rs.**
-
-## Features
-
-- **State Detection**: Detect terminal states (Idle, Thinking, ToolRunning, Confirming, Error)
-- **Confirmation Parsing**: Parse tool approval dialogs with options and tool info
-- **Status Bar Parsing**: Extract spinner, status text, and phase information
-- **Tool Output Parsing**: Parse tool execution output with parameters and duration
-- **Fingerprint Registry**: Fast pattern matching with 22+ pre-defined patterns
+**Rust-powered performance with zero-dependency Node.js API.**
 
 ## Installation
-
-### Rust
-
-```toml
-[dependencies]
-semantic-terminal = "0.1"
-```
-
-### Node.js
 
 ```bash
 npm install @anthropic/semantic-terminal
@@ -33,25 +16,6 @@ Pre-built binaries available for:
 - Windows (x64)
 
 ## Quick Start
-
-### Rust
-
-```rust
-use semantic_terminal::{
-    ClaudeCodeStateParser, StateParser,
-    ClaudeCodeConfirmParser, ConfirmParser,
-    ParserContext,
-};
-
-// Detect terminal state
-let parser = ClaudeCodeStateParser::new();
-let context = ParserContext::new(vec!["❯ ".to_string()]);
-if let Some(result) = parser.detect_state(&context) {
-    println!("State: {:?}, Confidence: {}", result.state, result.confidence);
-}
-```
-
-### Node.js
 
 ```typescript
 import { detectState, detectConfirm, parseToolOutput, State } from '@anthropic/semantic-terminal'
@@ -170,36 +134,6 @@ spinnerChars() // ['·', '✻', '✽', '✶', '✳', '✢']
 - **Task Monitoring**: Track tool execution and state changes
 - **Custom UIs**: Build terminal UIs that react to Claude Code state
 - **Testing**: Validate Claude Code output in automated tests
-
-## Project Structure
-
-```
-semantic-terminal/
-├── crates/
-│   ├── semantic-terminal/      # Core Rust library
-│   └── semantic-terminal-napi/ # Node.js bindings
-├── packages/
-│   ├── semantic-terminal/      # Main npm package
-│   └── semantic-terminal-*/    # Platform-specific packages
-└── Cargo.toml                  # Rust workspace
-```
-
-## Building
-
-### Rust
-
-```bash
-cargo build --release
-```
-
-### Node.js
-
-```bash
-cd packages/semantic-terminal
-npm install
-npm run build
-npm test
-```
 
 ## License
 
